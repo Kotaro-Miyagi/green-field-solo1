@@ -6,7 +6,7 @@ module.exports = {
   development: {
     client: "pg",
     connection: {
-      database: "record",
+      database: "muscle",
       user: "Kotaro Miyagi",
     },
     migrations: {
