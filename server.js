@@ -18,3 +18,19 @@ app.get("/record", async (req, res) => {
     console.error(error);
   }
 });
+
+app.post("/record", async (req, res) => {
+  try {
+    const { dateId, id, training } = req.body;
+    await knex("record").insert({
+      "date-id": dateId,
+      id: id,
+      training: training,
+    });
+
+    res.status(200).send("Record created successfully");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred");
+  }
+});
