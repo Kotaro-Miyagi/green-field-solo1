@@ -7,3 +7,14 @@ const knex = require("./src/db/index");
 app.listen(PORT, () => {
   console.log(`Server is running ${PORT} !`);
 });
+
+app.get("/record", async (req, res) => {
+  try {
+    const data = await knex
+      .from("record")
+      .select(["date-id", "id", "training"]);
+    res.status(200).send(data);
+  } catch (error) {
+    console.error(error);
+  }
+});
