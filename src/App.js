@@ -2,8 +2,10 @@ import { useState, useRef } from "react";
 import TrainingList from "./components/TrainingList";
 import "./App.css";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 function App() {
+  // const knex = require("./db/index");
   const [TrainingLists, setTrainingLists] = useState([]);
 
   const trainingNameRef = useRef();
@@ -32,22 +34,63 @@ function App() {
     setTrainingLists(newTraining);
   };
 
-  const handleClear = () => {
-    const newTraining = TrainingLists.filter((training) => !training.completed);
-    setTrainingLists(newTraining);
+  const submit = async () => {
+    try {
+      console.log(TrainingLists);
+      const body = {
+        "date-id": "2023-06-11",
+        id: 1,
+        training: "ベンチプレス",
+      };
+      await fetch("http://localhost:3000/record", {
+        method: "POST",
+        header: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      console.log("Success:", TrainingLists);
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  // const newTraining = TrainingLists.filter(
+  //   (training) => !training.completed
+  // );
+  // setTrainingLists(newTraining);
+  // const handleClear = () => {
+  //   const newTraining = TrainingLists.filter((training) => !training.completed);
+  //   setTrainingLists(newTraining);
+  // };
 
   const remainingTodos = TrainingLists.filter(
     (training) => !training.completed
   ).length;
 
+  // const saveRecord = async () => {
+  //   try {
+  //     await knex("record", {
+  //       dateId: uuidv4(),
+  //       id: uuidv4(),
+  //       training: TrainingLists.map((training) => training.name),
+  //     });
+  //     console.log("Record saved successfully");
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   return (
     <div className="container">
       <h1>筋肉育てる君</h1>
       <div>
-        <input type="text" ref={trainingNameRef} className="todo-input" />
+        <input
+          type="text"
+          ref={trainingNameRef}
+          className="todo-input"
+          placeholder="Let's training!"
+        />
         <button onClick={handleAddTraining} className="todo-button">
-          トレーニング💪
+          トレーニング🔥
         </button>
       </div>
       <TrainingList
@@ -55,7 +98,7 @@ function App() {
         toggleTraining={toggleTraining}
         deleteTraining={deleteTraining}
       />
-      <button onClick={handleClear} className="todo-button">
+      <button onClick={submit} className="todo-button">
         保存💪
       </button>
       <div className="remaining-todos">
@@ -64,6 +107,7 @@ function App() {
     </div>
   );
 }
+
 export default App;
 
 // //import logo from "./logo.svg";
@@ -119,18 +163,3 @@ export default App;
 // }
 
 // export default App;
-
-// // <header className="App-header">
-// // <img src={logo} className="App-logo" alt="logo" />
-// // <p>
-// //   Edit <code>src/App.js</code> and save to reload.
-// // </p>
-// // <a
-// //   className="App-link"
-// //   href="https://reactjs.org"
-// //   target="_blank"
-// //   rel="noopener noreferrer"
-// // >
-// //   Learn React
-// // </a>
-// // </header>
