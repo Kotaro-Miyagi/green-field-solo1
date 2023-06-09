@@ -16,7 +16,7 @@ function App() {
     };
 
     getlist();
-  }, []);
+  });
 
   const trainingNameRef = useRef();
 
@@ -46,30 +46,40 @@ function App() {
 
   const submit = async () => {
     try {
-      const name = trainingNameRef.current.value;
-      if (name === "") return;
+      const Trained = TrainingLists.filter(
+        (training) => training.completed
+      ).map((e) => {
+        console.log(e.name);
+        return e.name;
+      });
+      console.log(Trained);
+      // const name = trainingNameRef.current.value;
+      // if (name === "") return;
+      // console.log(name);
 
-      const body = {
-        "date-id": new Date(),
-        id: 1,
-        training: name,
-      };
-      // console.log(body);
-      await fetch("http://localhost:3333/record", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
+      Trained.forEach(async (element) => {
+        const body = {
+          "date-id": new Date(),
+          id: 1,
+          training: element,
+        };
+        // console.log(body);
+        await fetch("http://localhost:3333/record", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+        // setTrainingLists((prevTrainings) => {
+        //   return [
+        //     ...prevTrainings,
+        //     { id: body.id, element: body.training, completed: false },
+        //   ];
+        // });
+        // trainingNameRef.current.value = null;
+        console.log("Success:", TrainingLists);
       });
-      setTrainingLists((prevTrainings) => {
-        return [
-          ...prevTrainings,
-          { id: body.id, name: body.training, completed: false },
-        ];
-      });
-      trainingNameRef.current.value = null;
-      console.log("Success:", TrainingLists);
     } catch (error) {
       console.error(error);
     }
