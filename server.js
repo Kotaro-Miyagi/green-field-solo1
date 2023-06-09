@@ -33,12 +33,6 @@ app.get("/record", async (req, res) => {
 
 app.post("/record", async (req, res) => {
   try {
-    // const { dateId, id, training } = req.body;
-    // const records = training.((name) => ({
-    //   "date-id": dateId,
-    //   id: id,
-    //   training: name,
-    // }));
     console.log("############################");
     console.log(req.body);
     await knex("record").insert(req.body);
