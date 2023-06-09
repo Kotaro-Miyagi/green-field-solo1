@@ -7,6 +7,13 @@ const cors = require("cors");
 
 app.use(cors());
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
+
 app.use(bodyParser.json());
 app.use(express.json());
 app.listen(PORT, () => {
@@ -32,7 +39,8 @@ app.post("/record", async (req, res) => {
     //   id: id,
     //   training: name,
     // }));
-
+    console.log("############################");
+    console.log(req.body);
     await knex("record").insert(req.body);
 
     res.status(200).send("Record created successfully");

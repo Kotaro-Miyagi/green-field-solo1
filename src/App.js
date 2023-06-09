@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import TrainingList from "./components/TrainingList";
 import "./App.css";
 import { v4 as uuidv4 } from "uuid";
@@ -7,6 +7,16 @@ import axios from "axios";
 function App() {
   // const knex = require("./db/index");
   const [TrainingLists, setTrainingLists] = useState([]);
+  const [Trainingcount, setTrainingcount] = useState(0);
+  useEffect(() => {
+    const getlist = async () => {
+      const response = await fetch("http://localhost:3333/record");
+      const data = await response.json();
+      setTrainingcount(data.length);
+    };
+
+    getlist();
+  }, []);
 
   const trainingNameRef = useRef();
 
@@ -36,17 +46,29 @@ function App() {
 
   const submit = async () => {
     try {
-      console.log(TrainingLists);
+      const name = trainingNameRef.current.value;
+      if (name === "") return;
+
       const body = {
-        "date-id": "2023-06-11",
+        "date-id": new Date(),
         id: 1,
-        training: "ベンチプレス",
+        training: name,
       };
-      await fetch("http://localhost:3000/record", {
+      // console.log(body);
+      await fetch("http://localhost:3333/record", {
         method: "POST",
-        header: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(body),
       });
+      setTrainingLists((prevTrainings) => {
+        return [
+          ...prevTrainings,
+          { id: body.id, name: body.training, completed: false },
+        ];
+      });
+      trainingNameRef.current.value = null;
       console.log("Success:", TrainingLists);
     } catch (error) {
       console.error(error);
@@ -57,10 +79,10 @@ function App() {
   //   (training) => !training.completed
   // );
   // setTrainingLists(newTraining);
-  // const handleClear = () => {
-  //   const newTraining = TrainingLists.filter((training) => !training.completed);
-  //   setTrainingLists(newTraining);
-  // };
+  const handleClear = () => {
+    const newTraining = TrainingLists.filter((training) => !training.completed);
+    setTrainingLists(newTraining);
+  };
 
   const remainingTodos = TrainingLists.filter(
     (training) => !training.completed
@@ -98,11 +120,20 @@ function App() {
         toggleTraining={toggleTraining}
         deleteTraining={deleteTraining}
       />
-      <button onClick={submit} className="todo-button">
+      <button
+        onClick={() => {
+          submit();
+          handleClear();
+        }}
+        className="todo-button"
+      >
         保存💪
       </button>
       <div className="remaining-todos">
         残りのトレーニング: {remainingTodos}
+      </div>
+      <div className="remaining-todos">
+        今までのトレーニング: {Trainingcount}
       </div>
     </div>
   );
