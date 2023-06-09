@@ -28,8 +28,8 @@
     "back": "npx knex migrate:rollback --knexfile src/db/knexfile.js",
     "seed": "npx knex seed:run --knexfile src/db/knexfile.js",
     "seed-make": "npx knex seed:make --knexfile src/db/knexfile.js",
-    "rend-build": "npm install && npm run build",
-    "rend-start": "npm run back && npm run migrate && npm run seed && node server.js"
+    "rend-build": "npm install && npm run build && npm run migrate && npm run seed",
+    "rend-start": "react-scripts start"
   },
   "eslintConfig": {
     "extends": [
