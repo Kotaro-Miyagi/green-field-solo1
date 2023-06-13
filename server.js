@@ -33,7 +33,7 @@ app.get("/record", async (req, res) => {
 
 app.post("/record", async (req, res) => {
   try {
-    console.log("############################");
+    // console.log("############################");
     console.log(req.body);
     await knex("record").insert(req.body);
 
